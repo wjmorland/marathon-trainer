@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Will's Marathon Training{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Will's Marathon Training</h1>
+  <p>Follow along with the marathon training plan and progress — synced automatically from Strava.</p>
+</section>
+<section class="plan-list">
+  {% for plan in plans %}
+  <a class="plan-card" href="plans/{{ plan.id }}/index.html">
+    <h2>{{ plan.name }}</h2>
+    <p>Goal: <strong>{{ plan.goal_time }}</strong> ({{ plan.goal_pace }}) &middot; Race day: {{ plan.race_date }}</p>
+    <div class="progress-bar"><div class="progress-fill" style="width: {{ plan.progress.pct }}%"></div></div>
+    <p class="progress-label">{{ plan.progress.completed }} / {{ plan.progress.total }} sessions logged ({{ plan.progress.pct }}%)</p>
+  </a>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% block title %}{{ plan.name }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>{{ plan.name }}</h1>
+  <p>Goal: <strong>{{ plan.goal_time }}</strong> ({{ plan.goal_pace }}) &middot; Race day: {{ plan.race_date }}</p>
+  <div class="progress-bar"><div class="progress-fill" style="width: {{ plan.progress.pct }}%"></div></div>
+  <p class="progress-label">{{ plan.progress.completed }} / {{ plan.progress.total }} sessions logged ({{ plan.progress.pct }}%)</p>
+</section>
+
+{% for week in plan.weeks %}
+<section class="week">
+  <table class="week-table">
+    <thead>
+      <tr>
+        <th class="week-header" colspan="5">
+          {{ week.label or ("Week " ~ week.number) }}
+          {% if week.goal_mi %}<span class="week-goal">Goal: {{ week.goal_mi }} mi</span>{% endif %}
+        </th>
+      </tr>
+      <tr class="col-labels">
+        <th>Day</th>
+        <th>Date</th>
+        <th>Plan</th>
+        <th>Dist</th>
+        <th>Actual</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for session in week.sessions %}
+      {% set row_classes = ["day-row", "type-" ~ session.type] %}
+      {% if session.actual %}{% set row_classes = row_classes + ["logged"] %}{% endif %}
+      {% if session.is_today %}{% set row_classes = row_classes + ["today"] %}{% endif %}
+      <tr class="{{ row_classes | join(' ') }}" onclick="location.href='sessions/{{ session.id }}/index.html'">
+        <td class="col-day">{{ session.day }}</td>
+        <td class="col-date">{{ session.date }}</td>
+        <td class="col-plan">
+          <a href="sessions/{{ session.id }}/index.html">{{ session.title }}</a>
+          {% if session.detail %}
+          <div class="col-plan-detail">{{ session.detail }}</div>
+          {% endif %}
+        </td>
+        <td class="col-dist">{{ macros.mi(session.planned_distance_mi) }}</td>
+        <td class="col-actual">
+          {% if session.actual %}
+          {% for activity in session.actual.activities %}
+          <div class="col-actual-activity">
+            <span class="activity-icon" title="{{ activity.type or 'Run' }}">{{ '🚴' if activity.is_ride else '🏃' }}</span>
+            {% if activity.distance_mi %}{{ activity.distance_mi }} mi{% else %}{{ (activity.moving_time_s // 60) }} min{% endif %}
+            {% if activity.is_ride and activity.avg_speed_mph %}@ {{ activity.avg_speed_mph }}{% elif not activity.is_ride and activity.avg_pace %}@ {{ activity.avg_pace }}{% endif %}
+          </div>
+          {% else %}
+          ✅ {{ session.actual.distance_mi }} mi
+          {% if session.actual.avg_pace %}@ {{ session.actual.avg_pace }}{% elif session.actual.avg_speed_mph %}@ {{ session.actual.avg_speed_mph }}{% endif %}
+          {% endfor %}
+          {% elif session.is_past and session.type != 'rest' %}
+          <span class="missing">not logged</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      <tr class="week-total-row">
+        <td colspan="3">Weekly Total</td>
+        <td>{{ macros.mi(week.goal_mi) }}</td>
+        <td>{{ macros.mi(week.actual_mi) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+{% endfor %}
+{% endblock %}

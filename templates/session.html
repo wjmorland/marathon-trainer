@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ session.title }} — {{ session.date }}{% endblock %}
+{% block content %}
+<a class="back-link" href="../../index.html">&larr; Back to {{ plan.name }}</a>
+<section class="session-detail type-{{ session.type }}">
+  <h1>{{ session.title }}</h1>
+  <p class="session-meta">{{ session.day }} &middot; {{ session.date }}</p>
+
+  <div class="detail-block">
+    <h3>Planned</h3>
+    <p>{{ session.detail or "Rest day." }}</p>
+    {% if session.planned_distance_mi %}<p>Distance: <strong>{{ session.planned_distance_mi }} mi</strong></p>{% endif %}
+  </div>
+
+  {% if session.actual %}
+  {% for activity in session.actual.activities %}
+  <div class="detail-block actual activity-{{ 'ride' if activity.is_ride else 'run' }}">
+    <h3>
+      <span class="activity-icon" title="{{ activity.type or 'Run' }}">{{ '🚴' if activity.is_ride else '🏃' }}</span>
+      {{ activity.name }} <a class="strava-link" href="{{ activity.strava_url }}" target="_blank" rel="noopener">view on Strava &rarr;</a>
+    </h3>
+    <div class="stat-grid">
+      <div class="stat"><span class="stat-label">Distance</span><span class="stat-value">{{ activity.distance_mi }} mi</span></div>
+      {% if activity.is_ride %}
+      {% if activity.avg_speed_mph %}<div class="stat"><span class="stat-label">Speed</span><span class="stat-value">{{ activity.avg_speed_mph }}</span></div>{% endif %}
+      {% else %}
+      {% if activity.avg_pace %}<div class="stat"><span class="stat-label">Pace</span><span class="stat-value">{{ activity.avg_pace }}</span></div>{% endif %}
+      {% endif %}
+      <div class="stat"><span class="stat-label">Moving time</span><span class="stat-value">{{ (activity.moving_time_s // 60) }}:{{ "%02d" % (activity.moving_time_s % 60) }}</span></div>
+      {% if activity.elapsed_time_s %}<div class="stat"><span class="stat-label">Elapsed time</span><span class="stat-value">{{ (activity.elapsed_time_s // 60) }}:{{ "%02d" % (activity.elapsed_time_s % 60) }}</span></div>{% endif %}
+      {% if activity.elevation_gain_ft %}<div class="stat"><span class="stat-label">Elevation gain</span><span class="stat-value">{{ activity.elevation_gain_ft }} ft</span></div>{% endif %}
+      {% if activity.avg_heartrate %}<div class="stat"><span class="stat-label">Avg HR</span><span class="stat-value">{{ activity.avg_heartrate | round | int }} bpm</span></div>{% endif %}
+      {% if activity.max_heartrate %}<div class="stat"><span class="stat-label">Max HR</span><span class="stat-value">{{ activity.max_heartrate | round | int }} bpm</span></div>{% endif %}
+      {% if activity.avg_cadence %}<div class="stat"><span class="stat-label">Avg cadence</span><span class="stat-value">{{ activity.avg_cadence | round | int }}</span></div>{% endif %}
+      {% if activity.calories %}<div class="stat"><span class="stat-label">Calories</span><span class="stat-value">{{ activity.calories | round | int }}</span></div>{% endif %}
+    </div>
+
+    {% if activity.splits %}
+    <h4>Splits</h4>
+    <table class="splits-table">
+      <thead><tr><th>Mi</th><th>Pace</th><th>Elev</th>{% if activity.splits[0].avg_heartrate %}<th>HR</th>{% endif %}</tr></thead>
+      <tbody>
+        {% for split in activity.splits %}
+        <tr>
+          <td>{{ split.mile }}</td>
+          <td>{{ split.pace }}</td>
+          <td>{% if split.elevation_diff_ft %}{{ "%+.0f" % split.elevation_diff_ft }} ft{% endif %}</td>
+          {% if split.avg_heartrate %}<td>{{ split.avg_heartrate | round | int }}</td>{% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% elif session.is_past and session.type != 'rest' %}
+  <div class="detail-block missing">
+    <p>No matching Strava activity found for this date yet.</p>
+  </div>
+  {% endif %}
+
+  <nav class="session-nav">
+    {% if prev_s %}<a href="../{{ prev_s.id }}/index.html">&larr; {{ prev_s.date }}</a>{% else %}<span></span>{% endif %}
+    {% if next_s %}<a href="../{{ next_s.id }}/index.html">{{ next_s.date }} &rarr;</a>{% endif %}
+  </nav>
+</section>
+{% endblock %}

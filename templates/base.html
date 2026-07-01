@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Will's marathon training plan rendered session-by-session, with actual workouts synced in from Strava.">
+<title>{% block title %}Will's Marathon Training{% endblock %}</title>
+<link rel="icon" href="{{ root }}static/favicon.ico">
+<link rel="stylesheet" href="{{ root }}static/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="{{ root }}index.html">🏃 Will's Marathon Training</a>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+<footer class="site-footer">
+  <p>Will's training plan. Data syncs from Strava automatically.</p>
+</footer>
+</body>
+</html>
