@@ -62,7 +62,7 @@ w1-2026-06-09:
       pace: 10:08/mi
       avg_heartrate: 132.4
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:31.557406Z'
+  synced_at: '2026-07-01T01:48:40.448793Z'
 w1-2026-06-10:
   source: strava
   distance_mi: 4.18
@@ -127,7 +127,7 @@ w1-2026-06-10:
       pace: 9:40/mi
       avg_heartrate: 129.7
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:31.915498Z'
+  synced_at: '2026-07-01T01:48:40.774365Z'
 w1-2026-06-11:
   source: strava
   distance_mi: 4.01
@@ -192,7 +192,7 @@ w1-2026-06-11:
       pace: 11:06/mi
       avg_heartrate: 118.4
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:32.201739Z'
+  synced_at: '2026-07-01T01:48:41.021259Z'
 w1-2026-06-12:
   source: strava
   distance_mi: 1.45
@@ -239,7 +239,7 @@ w1-2026-06-12:
       pace: 10:17/mi
       avg_heartrate: 127.4
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:32.451710Z'
+  synced_at: '2026-07-01T01:48:41.216981Z'
 w1-2026-06-13:
   source: strava
   distance_mi: 7.88
@@ -322,7 +322,7 @@ w1-2026-06-13:
       pace: 9:40/mi
       avg_heartrate: 150.4
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:32.965476Z'
+  synced_at: '2026-07-01T01:48:41.564515Z'
 w1-2026-06-14:
   source: strava
   distance_mi: 5.54
@@ -393,7 +393,7 @@ w1-2026-06-14:
       pace: 10:49/mi
       avg_heartrate: 123.7
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:33.458720Z'
+  synced_at: '2026-07-01T01:48:41.873917Z'
 w2-2026-06-16:
   source: strava
   distance_mi: 6.45
@@ -470,7 +470,7 @@ w2-2026-06-16:
       pace: 9:24/mi
       avg_heartrate: 131.8
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:34.132690Z'
+  synced_at: '2026-07-01T01:48:42.422053Z'
 w2-2026-06-17:
   source: strava
   distance_mi: 5.99
@@ -541,7 +541,7 @@ w2-2026-06-17:
       pace: 9:01/mi
       avg_heartrate: 141.1
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:34.502761Z'
+  synced_at: '2026-07-01T01:48:42.729257Z'
 w2-2026-06-18:
   source: strava
   distance_mi: 4.18
@@ -606,7 +606,7 @@ w2-2026-06-18:
       pace: 10:01/mi
       avg_heartrate: 140.1
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:34.894616Z'
+  synced_at: '2026-07-01T01:48:43.027926Z'
 w2-2026-06-21:
   source: strava
   distance_mi: 12.8
@@ -719,7 +719,7 @@ w2-2026-06-21:
       pace: 9:09/mi
       avg_heartrate: 144.0
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:35.840810Z'
+  synced_at: '2026-07-01T01:48:43.910100Z'
 w3-2026-06-22:
   source: strava
   distance_mi: 5.89
@@ -790,7 +790,7 @@ w3-2026-06-22:
       pace: 10:22/mi
       avg_heartrate: 125.6
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:36.284968Z'
+  synced_at: '2026-07-01T01:48:44.282885Z'
 w3-2026-06-24:
   source: strava
   distance_mi: 5.7
@@ -861,7 +861,7 @@ w3-2026-06-24:
       pace: 11:53/mi
       avg_heartrate: 116.1
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:36.553973Z'
+  synced_at: '2026-07-01T01:48:44.506668Z'
 w3-2026-06-25:
   source: strava
   distance_mi: 7.66
@@ -944,7 +944,7 @@ w3-2026-06-25:
       pace: 9:35/mi
       avg_heartrate: 131.5
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:36.937554Z'
+  synced_at: '2026-07-01T01:48:44.837910Z'
 w3-2026-06-26:
   source: strava
   distance_mi: 4.24
@@ -1009,7 +1009,7 @@ w3-2026-06-26:
       pace: 9:48/mi
       avg_heartrate: 138.7
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:37.371892Z'
+  synced_at: '2026-07-01T01:48:45.162587Z'
 w3-2026-06-27:
   source: strava
   distance_mi: 8.56
@@ -1098,7 +1098,7 @@ w3-2026-06-27:
       pace: 8:58/mi
       avg_heartrate: 142.8
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:37.802064Z'
+  synced_at: '2026-07-01T01:48:45.611069Z'
 w4-2026-06-30:
   source: strava
   distance_mi: 5.74
@@ -1183,7 +1183,7 @@ w4-2026-06-30:
       pace: 10:00/mi
       avg_heartrate: 148.8
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:38.599686Z'
+  synced_at: '2026-07-01T01:48:46.263346Z'
 w1-2026-06-08:
   source: strava
   distance_mi: 0.0
@@ -1218,7 +1218,7 @@ w1-2026-06-08:
       pace: null
       avg_heartrate: 111.8
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:31.144504Z'
+  synced_at: '2026-07-01T01:48:40.023952Z'
 w2-2026-06-15:
   source: strava
   distance_mi: 7.01
@@ -1301,7 +1301,7 @@ w2-2026-06-15:
       pace: 4:21/mi
       avg_heartrate: 102.9
       avg_cadence: 68.0
-  synced_at: '2026-07-01T01:25:33.732198Z'
+  synced_at: '2026-07-01T01:48:42.111179Z'
 w2-2026-06-19:
   source: strava
   distance_mi: 30.91
@@ -1522,7 +1522,7 @@ w2-2026-06-19:
       pace: 3:53/mi
       avg_heartrate: 145.6
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:35.316878Z'
+  synced_at: '2026-07-01T01:48:43.440251Z'
 w3-2026-06-28:
   source: strava
   distance_mi: 19.1
@@ -1677,4 +1677,4 @@ w3-2026-06-28:
       pace: 4:32/mi
       avg_heartrate: 133.8
       avg_cadence: null
-  synced_at: '2026-07-01T01:25:38.238232Z'
+  synced_at: '2026-07-01T01:48:45.964911Z'
