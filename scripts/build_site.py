@@ -8,6 +8,7 @@ to the site with no code changes.
 Usage:
     .venv/bin/python3 scripts/build_site.py
 """
+import hashlib
 import shutil
 from datetime import date
 from pathlib import Path
@@ -23,6 +24,12 @@ STATIC_DIR = ROOT / "static"
 OUT_DIR = ROOT / "docs"
 
 env = Environment(loader=FileSystemLoader(TEMPLATES_DIR), autoescape=True)
+
+# Cache-busts static asset URLs so browsers (and the GitHub Pages CDN's
+# 10-minute cache) pick up changes immediately after a deploy instead of
+# serving a stale style.css/favicon.ico under the same URL.
+ASSET_VERSION = hashlib.sha1((STATIC_DIR / "css" / "style.css").read_bytes()).hexdigest()[:10]
+env.globals["asset_version"] = ASSET_VERSION
 
 
 def load_plans():
