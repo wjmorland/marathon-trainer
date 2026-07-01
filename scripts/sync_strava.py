@@ -192,7 +192,7 @@ def main():
         activities_by_date[local_date].append(a)
 
     updated = dict(existing)
-    synced_days = 0
+    changed_days = 0
     for local_date, day_summaries in activities_by_date.items():
         session_ids = sessions_by_date.get(local_date, [])
         if not session_ids:
@@ -216,7 +216,7 @@ def main():
         ride_distance_m = sum(r["distance_mi"] for r in records if r["is_ride"]) * METERS_PER_MILE
         ride_moving_s = sum(r["moving_time_s"] for r in records if r["is_ride"])
 
-        updated[session_id] = {
+        candidate = {
             "source": "strava",
             "distance_mi": total_distance_mi,
             "moving_time_s": total_moving_s,
@@ -227,14 +227,22 @@ def main():
             "avg_pace": format_pace(run_distance_m, run_moving_s) if has_run and not has_ride else None,
             "avg_speed_mph": format_speed(ride_distance_m, ride_moving_s) if has_ride and not has_run else None,
             "activities": records,
-            "synced_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         }
-        synced_days += 1
 
-    activities_path.parent.mkdir(parents=True, exist_ok=True)
-    with activities_path.open("w") as f:
-        yaml.safe_dump(updated, f, sort_keys=False, allow_unicode=True, width=100)
-    print(f"Synced {synced_days} activity day(s) -> {activities_path}")
+        existing_entry = existing.get(session_id, {})
+        existing_without_timestamp = {k: v for k, v in existing_entry.items() if k != "synced_at"}
+        if candidate == existing_without_timestamp:
+            continue
+
+        candidate["synced_at"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        updated[session_id] = candidate
+        changed_days += 1
+
+    if updated != existing:
+        activities_path.parent.mkdir(parents=True, exist_ok=True)
+        with activities_path.open("w") as f:
+            yaml.safe_dump(updated, f, sort_keys=False, allow_unicode=True, width=100)
+    print(f"Synced {changed_days} changed activity day(s) -> {activities_path}")
 
 
 if __name__ == "__main__":
