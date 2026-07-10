@@ -1678,3 +1678,561 @@ w3-2026-06-28:
       avg_heartrate: 133.8
       avg_cadence: null
   synced_at: '2026-07-01T01:50:48.789445Z'
+w4-2026-07-01:
+  source: strava
+  distance_mi: 5.73
+  moving_time_s: 3035
+  has_run: true
+  has_ride: false
+  avg_pace: 8:49/mi
+  avg_speed_mph: null
+  activities:
+  - id: 19136419734
+    name: Morning Run
+    type: Run
+    is_ride: false
+    distance_mi: 5.73
+    moving_time_s: 3035
+    elapsed_time_s: 3060
+    avg_pace: 8:49/mi
+    avg_speed_mph: null
+    elevation_gain_ft: 97.1
+    avg_heartrate: 145.0
+    max_heartrate: 164.0
+    avg_cadence: null
+    calories: 577.0
+    perceived_exertion: null
+    strava_url: https://www.strava.com/activities/19136419734
+    splits:
+    - mile: 1
+      distance_mi: 1.0
+      moving_time_s: 581
+      pace: 9:40/mi
+      elevation_diff_ft: -13.1
+      avg_heartrate: 119.67486818980667
+    - mile: 2
+      distance_mi: 1.0
+      moving_time_s: 507
+      pace: 8:26/mi
+      elevation_diff_ft: 3.9
+      avg_heartrate: 140.53174603174602
+    - mile: 3
+      distance_mi: 1.0
+      moving_time_s: 483
+      pace: 8:04/mi
+      elevation_diff_ft: -6.6
+      avg_heartrate: 151.82254697286012
+    - mile: 4
+      distance_mi: 1.0
+      moving_time_s: 519
+      pace: 8:38/mi
+      elevation_diff_ft: 7.2
+      avg_heartrate: 153.93423597678918
+    - mile: 5
+      distance_mi: 1.0
+      moving_time_s: 561
+      pace: 9:20/mi
+      elevation_diff_ft: -2.0
+      avg_heartrate: 152.09838998211092
+    - mile: 6
+      distance_mi: 0.73
+      moving_time_s: 384
+      pace: 8:49/mi
+      elevation_diff_ft: 7.9
+      avg_heartrate: 157.98936170212767
+    laps:
+    - lap: 1
+      name: Lap 1
+      distance_mi: 5.73
+      moving_time_s: 3060
+      pace: 8:54/mi
+      avg_heartrate: 145.0
+      avg_cadence: null
+  synced_at: '2026-07-10T02:07:35.773990Z'
+w4-2026-07-02:
+  source: strava
+  distance_mi: 4.33
+  moving_time_s: 2611
+  has_run: true
+  has_ride: false
+  avg_pace: 10:03/mi
+  avg_speed_mph: null
+  activities:
+  - id: 19149497506
+    name: Morning Run
+    type: Run
+    is_ride: false
+    distance_mi: 4.33
+    moving_time_s: 2611
+    elapsed_time_s: 2638
+    avg_pace: 10:03/mi
+    avg_speed_mph: null
+    elevation_gain_ft: 59.7
+    avg_heartrate: 129.0
+    max_heartrate: 145.0
+    avg_cadence: null
+    calories: 416.0
+    perceived_exertion: null
+    strava_url: https://www.strava.com/activities/19149497506
+    splits:
+    - mile: 1
+      distance_mi: 1.0
+      moving_time_s: 612
+      pace: 10:11/mi
+      elevation_diff_ft: -10.5
+      avg_heartrate: 118.3681592039801
+    - mile: 2
+      distance_mi: 1.0
+      moving_time_s: 617
+      pace: 10:16/mi
+      elevation_diff_ft: 2.6
+      avg_heartrate: 125.0489396411093
+    - mile: 3
+      distance_mi: 1.0
+      moving_time_s: 596
+      pace: 9:56/mi
+      elevation_diff_ft: -1.3
+      avg_heartrate: 133.32825719120135
+    - mile: 4
+      distance_mi: 1.0
+      moving_time_s: 598
+      pace: 9:58/mi
+      elevation_diff_ft: 1.3
+      avg_heartrate: 136.52093802345058
+    - mile: 5
+      distance_mi: 0.32
+      moving_time_s: 188
+      pace: 9:39/mi
+      elevation_diff_ft: 6.6
+      avg_heartrate: 138.3027027027027
+    laps:
+    - lap: 1
+      name: Lap 1
+      distance_mi: 4.33
+      moving_time_s: 2637
+      pace: 10:09/mi
+      avg_heartrate: 129.0
+      avg_cadence: null
+  synced_at: '2026-07-10T02:07:36.202325Z'
+w4-2026-07-04:
+  source: strava
+  distance_mi: 7.86
+  moving_time_s: 4413
+  has_run: true
+  has_ride: false
+  avg_pace: 9:21/mi
+  avg_speed_mph: null
+  activities:
+  - id: 19177754909
+    name: Morning Run
+    type: Run
+    is_ride: false
+    distance_mi: 7.86
+    moving_time_s: 4413
+    elapsed_time_s: 4615
+    avg_pace: 9:21/mi
+    avg_speed_mph: null
+    elevation_gain_ft: 648.3
+    avg_heartrate: 135.9
+    max_heartrate: 185.0
+    avg_cadence: null
+    calories: 774.0
+    perceived_exertion: null
+    strava_url: https://www.strava.com/activities/19177754909
+    splits:
+    - mile: 1
+      distance_mi: 1.0
+      moving_time_s: 691
+      pace: 11:30/mi
+      elevation_diff_ft: 15.7
+      avg_heartrate: 108.14691943127963
+    - mile: 2
+      distance_mi: 1.0
+      moving_time_s: 670
+      pace: 11:10/mi
+      elevation_diff_ft: -36.7
+      avg_heartrate: 111.66868381240545
+    - mile: 3
+      distance_mi: 1.0
+      moving_time_s: 822
+      pace: 13:40/mi
+      elevation_diff_ft: 19.0
+      avg_heartrate: 103.83795620437957
+    - mile: 4
+      distance_mi: 1.0
+      moving_time_s: 522
+      pace: 8:42/mi
+      elevation_diff_ft: 7.2
+      avg_heartrate: 133.52815533980583
+    - mile: 5
+      distance_mi: 1.0
+      moving_time_s: 459
+      pace: 7:38/mi
+      elevation_diff_ft: -26.9
+      avg_heartrate: 159.16339869281046
+    - mile: 6
+      distance_mi: 1.0
+      moving_time_s: 452
+      pace: 7:31/mi
+      elevation_diff_ft: 34.1
+      avg_heartrate: 164.67111111111112
+    - mile: 7
+      distance_mi: 1.0
+      moving_time_s: 417
+      pace: 6:57/mi
+      elevation_diff_ft: -27.6
+      avg_heartrate: 177.56971153846155
+    - mile: 8
+      distance_mi: 0.86
+      moving_time_s: 380
+      pace: 7:23/mi
+      elevation_diff_ft: 23.6
+      avg_heartrate: 176.98947368421054
+    laps:
+    - lap: 1
+      name: Lap 1
+      distance_mi: 7.86
+      moving_time_s: 4615
+      pace: 9:47/mi
+      avg_heartrate: 135.9
+      avg_cadence: null
+  synced_at: '2026-07-10T02:07:36.768699Z'
+w4-2026-07-05:
+  source: strava
+  distance_mi: 4.95
+  moving_time_s: 2972
+  has_run: true
+  has_ride: false
+  avg_pace: 10:00/mi
+  avg_speed_mph: null
+  activities:
+  - id: 19196017882
+    name: Evening Run
+    type: Run
+    is_ride: false
+    distance_mi: 4.95
+    moving_time_s: 2972
+    elapsed_time_s: 2982
+    avg_pace: 10:00/mi
+    avg_speed_mph: null
+    elevation_gain_ft: 73.5
+    avg_heartrate: 124.9
+    max_heartrate: 138.0
+    avg_cadence: null
+    calories: 471.0
+    perceived_exertion: null
+    strava_url: https://www.strava.com/activities/19196017882
+    splits:
+    - mile: 1
+      distance_mi: 1.0
+      moving_time_s: 608
+      pace: 10:07/mi
+      elevation_diff_ft: -13.8
+      avg_heartrate: 121.98509933774834
+    - mile: 2
+      distance_mi: 1.0
+      moving_time_s: 608
+      pace: 10:08/mi
+      elevation_diff_ft: 6.6
+      avg_heartrate: 123.67380560131795
+    - mile: 3
+      distance_mi: 1.0
+      moving_time_s: 594
+      pace: 9:54/mi
+      elevation_diff_ft: 3.9
+      avg_heartrate: 125.3445945945946
+    - mile: 4
+      distance_mi: 1.0
+      moving_time_s: 584
+      pace: 9:43/mi
+      elevation_diff_ft: -13.1
+      avg_heartrate: 125.49828178694158
+    - mile: 5
+      distance_mi: 0.94
+      moving_time_s: 578
+      pace: 10:14/mi
+      elevation_diff_ft: 15.7
+      avg_heartrate: 128.45421903052065
+    laps:
+    - lap: 1
+      name: Lap 1
+      distance_mi: 4.94
+      moving_time_s: 2981
+      pace: 10:03/mi
+      avg_heartrate: 124.9
+      avg_cadence: null
+  synced_at: '2026-07-10T02:07:37.258533Z'
+w5-2026-07-07:
+  source: strava
+  distance_mi: 6.48
+  moving_time_s: 3880
+  has_run: true
+  has_ride: false
+  avg_pace: 9:58/mi
+  avg_speed_mph: null
+  activities:
+  - id: 19222543709
+    name: Evening Run
+    type: Run
+    is_ride: false
+    distance_mi: 6.48
+    moving_time_s: 3880
+    elapsed_time_s: 3908
+    avg_pace: 9:58/mi
+    avg_speed_mph: null
+    elevation_gain_ft: 122.0
+    avg_heartrate: 120.9
+    max_heartrate: 137.0
+    avg_cadence: null
+    calories: 615.0
+    perceived_exertion: null
+    strava_url: https://www.strava.com/activities/19222543709
+    splits:
+    - mile: 1
+      distance_mi: 1.0
+      moving_time_s: 581
+      pace: 9:40/mi
+      elevation_diff_ft: -9.8
+      avg_heartrate: 120.76165803108809
+    - mile: 2
+      distance_mi: 1.0
+      moving_time_s: 597
+      pace: 9:57/mi
+      elevation_diff_ft: 3.3
+      avg_heartrate: 119.75
+    - mile: 3
+      distance_mi: 1.0
+      moving_time_s: 595
+      pace: 9:55/mi
+      elevation_diff_ft: -3.3
+      avg_heartrate: 121.84771573604061
+    - mile: 4
+      distance_mi: 1.0
+      moving_time_s: 598
+      pace: 9:58/mi
+      elevation_diff_ft: -0.7
+      avg_heartrate: 120.61809045226131
+    - mile: 5
+      distance_mi: 1.0
+      moving_time_s: 619
+      pace: 10:18/mi
+      elevation_diff_ft: 2.0
+      avg_heartrate: 120.05654281098546
+    - mile: 6
+      distance_mi: 1.0
+      moving_time_s: 616
+      pace: 10:16/mi
+      elevation_diff_ft: 0.7
+      avg_heartrate: 120.05528455284554
+    - mile: 7
+      distance_mi: 0.48
+      moving_time_s: 274
+      pace: 9:26/mi
+      elevation_diff_ft: 6.6
+      avg_heartrate: 125.45925925925926
+    laps:
+    - lap: 1
+      name: Lap 1
+      distance_mi: 6.48
+      moving_time_s: 3908
+      pace: 10:02/mi
+      avg_heartrate: 120.9
+      avg_cadence: null
+  synced_at: '2026-07-10T02:07:37.778481Z'
+w5-2026-07-08:
+  source: strava
+  distance_mi: 7.17
+  moving_time_s: 4100
+  has_run: true
+  has_ride: false
+  avg_pace: 9:31/mi
+  avg_speed_mph: null
+  activities:
+  - id: 19236670528
+    name: Evening Run
+    type: Run
+    is_ride: false
+    distance_mi: 7.17
+    moving_time_s: 4100
+    elapsed_time_s: 4113
+    avg_pace: 9:32/mi
+    avg_speed_mph: null
+    elevation_gain_ft: 152.9
+    avg_heartrate: 135.5
+    max_heartrate: 150.0
+    avg_cadence: null
+    calories: 697.0
+    perceived_exertion: null
+    strava_url: https://www.strava.com/activities/19236670528
+    splits:
+    - mile: 1
+      distance_mi: 1.0
+      moving_time_s: 558
+      pace: 9:17/mi
+      elevation_diff_ft: -12.5
+      avg_heartrate: 127.95675675675676
+    - mile: 2
+      distance_mi: 1.0
+      moving_time_s: 591
+      pace: 9:50/mi
+      elevation_diff_ft: 3.3
+      avg_heartrate: 128.9406779661017
+    - mile: 3
+      distance_mi: 1.0
+      moving_time_s: 565
+      pace: 9:25/mi
+      elevation_diff_ft: 0.7
+      avg_heartrate: 134.44582593250445
+    - mile: 4
+      distance_mi: 1.0
+      moving_time_s: 576
+      pace: 9:36/mi
+      elevation_diff_ft: 4.6
+      avg_heartrate: 135.0226480836237
+    - mile: 5
+      distance_mi: 1.0
+      moving_time_s: 564
+      pace: 9:24/mi
+      elevation_diff_ft: -5.2
+      avg_heartrate: 139.00713012477718
+    - mile: 6
+      distance_mi: 1.0
+      moving_time_s: 561
+      pace: 9:20/mi
+      elevation_diff_ft: 3.3
+      avg_heartrate: 143.1153153153153
+    - mile: 7
+      distance_mi: 1.0
+      moving_time_s: 583
+      pace: 9:43/mi
+      elevation_diff_ft: 6.6
+      avg_heartrate: 139.12435233160622
+    - mile: 8
+      distance_mi: 0.17
+      moving_time_s: 102
+      pace: 10:02/mi
+      elevation_diff_ft: -2.6
+      avg_heartrate: 141.72727272727272
+    laps:
+    - lap: 1
+      name: Lap 1
+      distance_mi: 7.17
+      moving_time_s: 4112
+      pace: 9:33/mi
+      avg_heartrate: 135.5
+      avg_cadence: null
+  synced_at: '2026-07-10T02:07:38.233963Z'
+w5-2026-07-09:
+  source: strava
+  distance_mi: 8.11
+  moving_time_s: 4672
+  has_run: true
+  has_ride: false
+  avg_pace: 9:36/mi
+  avg_speed_mph: null
+  activities:
+  - id: 19242366665
+    name: Morning Run
+    type: Run
+    is_ride: false
+    distance_mi: 3.92
+    moving_time_s: 2305
+    elapsed_time_s: 2311
+    avg_pace: 9:48/mi
+    avg_speed_mph: null
+    elevation_gain_ft: 69.6
+    avg_heartrate: 131.1
+    max_heartrate: 146.0
+    avg_cadence: null
+    calories: 378.0
+    perceived_exertion: null
+    strava_url: https://www.strava.com/activities/19242366665
+    splits:
+    - mile: 1
+      distance_mi: 1.0
+      moving_time_s: 603
+      pace: 10:02/mi
+      elevation_diff_ft: -13.8
+      avg_heartrate: 120.95317725752508
+    - mile: 2
+      distance_mi: 1.0
+      moving_time_s: 599
+      pace: 9:59/mi
+      elevation_diff_ft: 5.2
+      avg_heartrate: 128.31756756756758
+    - mile: 3
+      distance_mi: 1.0
+      moving_time_s: 567
+      pace: 9:26/mi
+      elevation_diff_ft: -2.0
+      avg_heartrate: 136.32275132275132
+    - mile: 4
+      distance_mi: 0.91
+      moving_time_s: 536
+      pace: 9:46/mi
+      elevation_diff_ft: 8.5
+      avg_heartrate: 139.84022556390977
+    laps:
+    - lap: 1
+      name: Lap 1
+      distance_mi: 3.92
+      moving_time_s: 2311
+      pace: 9:50/mi
+      avg_heartrate: 131.1
+      avg_cadence: null
+  - id: 19249845288
+    name: Evening Run
+    type: Run
+    is_ride: false
+    distance_mi: 4.19
+    moving_time_s: 2367
+    elapsed_time_s: 2566
+    avg_pace: 9:25/mi
+    avg_speed_mph: null
+    elevation_gain_ft: 112.9
+    avg_heartrate: 133.8
+    max_heartrate: 149.0
+    avg_cadence: null
+    calories: 414.0
+    perceived_exertion: null
+    strava_url: https://www.strava.com/activities/19249845288
+    splits:
+    - mile: 1
+      distance_mi: 1.0
+      moving_time_s: 559
+      pace: 9:18/mi
+      elevation_diff_ft: -28.2
+      avg_heartrate: 124.40074906367042
+    - mile: 2
+      distance_mi: 1.0
+      moving_time_s: 548
+      pace: 9:08/mi
+      elevation_diff_ft: 5.2
+      avg_heartrate: 134.02189781021897
+    - mile: 3
+      distance_mi: 1.0
+      moving_time_s: 577
+      pace: 9:36/mi
+      elevation_diff_ft: 5.2
+      avg_heartrate: 133.68110918544195
+    - mile: 4
+      distance_mi: 1.0
+      moving_time_s: 569
+      pace: 9:29/mi
+      elevation_diff_ft: 7.2
+      avg_heartrate: 141.33509700176367
+    - mile: 5
+      distance_mi: 0.19
+      moving_time_s: 114
+      pace: 10:03/mi
+      elevation_diff_ft: 0.0
+      avg_heartrate: 139.3148148148148
+    laps:
+    - lap: 1
+      name: Lap 1
+      distance_mi: 4.19
+      moving_time_s: 2565
+      pace: 10:12/mi
+      avg_heartrate: 133.8
+      avg_cadence: null
+  synced_at: '2026-07-10T02:07:39.029567Z'
