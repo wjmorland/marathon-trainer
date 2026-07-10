@@ -48,22 +48,17 @@ cd docs && python3 -m http.server 8000
 ## Setting up Strava sync
 
 1. Create a Strava API application at https://www.strava.com/settings/api.
-   Note the **Client ID** and **Client Secret**.
+   Note the **Client ID** and **Client Secret**, and set the **Authorization
+   Callback Domain** to `localhost`.
 2. Authorize your account and get a refresh token with the `activity:read_all`
-   scope. Easiest path:
-   - Visit (replace `CLIENT_ID`):
-     `https://www.strava.com/oauth/authorize?client_id=CLIENT_ID&response_type=code&redirect_uri=http://localhost&approval_prompt=force&scope=activity:read_all`
-   - After authorizing, copy the `code` param from the redirect URL.
-   - Exchange it for tokens:
-     ```bash
-     curl -X POST https://www.strava.com/oauth/token \
-       -d client_id=CLIENT_ID \
-       -d client_secret=CLIENT_SECRET \
-       -d code=AUTH_CODE \
-       -d grant_type=authorization_code
-     ```
-   - The response includes a `refresh_token` — this is what the sync script
-     needs (access tokens expire; the refresh token doesn't, unless revoked).
+   scope by running:
+   ```bash
+   .venv/bin/python3 scripts/get_strava_refresh_token.py CLIENT_ID CLIENT_SECRET
+   ```
+   This opens a browser to Strava's authorization page and runs a local
+   server to catch the redirect automatically, then prints the
+   `refresh_token` — this is what the sync script needs (access tokens
+   expire; the refresh token doesn't, unless revoked).
 3. In the GitHub repo settings, add these **Actions secrets**:
    - `STRAVA_CLIENT_ID`
    - `STRAVA_CLIENT_SECRET`
