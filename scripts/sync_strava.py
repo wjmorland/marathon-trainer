@@ -8,9 +8,11 @@ refresh token for a short-lived access token on every run.
 For each Run/Ride/VirtualRide activity in range, fetches full activity
 detail (GET /activities/{id}) to get splits, laps, heart rate, cadence,
 elevation, and calories -- not just the summary fields from the list
-endpoint. This costs one extra API request per activity (Strava allows
-100 req/15min, 1000/day, which is plenty for a daily sync of a handful of
-activities).
+endpoint. This costs one extra API request per activity, but only for
+days whose Strava summary (distance/moving_time per activity) looks
+different from what's already stored -- unchanged days are skipped before
+the detail fetch, so a re-run only pays for genuinely new/edited activity
+days (Strava allows 100 req/15min, 1000/day).
 
 Writes/updates rows in the Supabase `activities` table, keyed by
 (plan_id, session_id), so the site builder can merge planned vs. actual.
@@ -230,7 +232,20 @@ def main():
         # If a day has multiple sessions logged (rare), attach all Strava
         # activities for that date to the first session; otherwise 1:1.
         session_id = session_ids[0]
-        if existing.get(session_id, {}).get("source") == "manual":
+        existing_entry = existing.get(session_id, {})
+        if existing_entry.get("source") == "manual":
+            continue
+
+        # Cheap pre-check using summary fields (no extra API request) so an
+        # unchanged day doesn't cost a detail fetch on every re-run.
+        summary_fingerprint = sorted(
+            (a["id"], round(a.get("distance", 0) / METERS_PER_MILE, 2), a.get("moving_time", 0))
+            for a in day_summaries
+        )
+        stored_fingerprint = sorted(
+            (r["id"], r["distance_mi"], r["moving_time_s"]) for r in existing_entry.get("activities", [])
+        )
+        if summary_fingerprint == stored_fingerprint:
             continue
 
         details = [fetch_activity_detail(access_token, a["id"]) for a in day_summaries]
@@ -259,7 +274,6 @@ def main():
             "activities": records,
         }
 
-        existing_entry = existing.get(session_id, {})
         existing_without_timestamp = {k: v for k, v in existing_entry.items() if k != "synced_at"}
         if candidate == existing_without_timestamp:
             continue
