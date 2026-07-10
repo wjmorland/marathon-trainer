@@ -102,12 +102,6 @@ Postgres instead of git, so the daily sync doesn't need to push commits.
    - `SUPABASE_SECRET_KEY`
 5. To run `sync_strava.py` or `build_site.py` locally, export the same two
    env vars.
-6. If migrating from the old git-committed `data/activities/*.yaml` files,
-   run this once (with `SUPABASE_URL`/`SUPABASE_SECRET_KEY` set) before
-   deleting them:
-   ```bash
-   .venv/bin/python3 scripts/migrate_activities_to_supabase.py
-   ```
 
 ## Enabling GitHub Pages
 
