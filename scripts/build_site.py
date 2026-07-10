@@ -35,6 +35,7 @@ env = Environment(loader=FileSystemLoader(TEMPLATES_DIR), autoescape=True)
 ASSET_VERSION = hashlib.sha1(
     (STATIC_DIR / "css" / "style.css").read_bytes()
     + (STATIC_DIR / "js" / "theme.js").read_bytes()
+    + (STATIC_DIR / "js" / "plan.js").read_bytes()
 ).hexdigest()[:10]
 env.globals["asset_version"] = ASSET_VERSION
 
@@ -81,6 +82,10 @@ def load_plans():
                     )
                     actual_mi += run_mi
             week["actual_mi"] = round(actual_mi, 1) if actual_mi else None
+            week["is_past"] = all(s["date"] < today for s in week["sessions"])
+            week["is_current"] = any(s["is_today"] for s in week["sessions"])
+            goal_mi = week.get("goal_mi")
+            week["pct"] = round(100 * actual_mi / goal_mi) if goal_mi else 0
         plan["progress"] = {
             "completed": completed,
             "total": total,
