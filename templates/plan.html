@@ -9,8 +9,8 @@
   <p class="progress-label">
     {% if plan.countdown.days_remaining > 0 %}{{ plan.countdown.days_remaining }} days until race day{% elif plan.countdown.days_remaining == 0 %}Race day is today{% else %}Race day has passed{% endif %}
   </p>
-  <div class="progress-bar"><div class="progress-fill" style="width: {{ plan.progress.pct }}%"></div></div>
-  <p class="progress-label">{{ plan.progress.logged }} / {{ plan.progress.elapsed }} days logged ({{ plan.progress.pct }}%)</p>
+  <div class="progress-bar"><div class="progress-fill" style="width: {{ [plan.progress.pct, 100] | min }}%"></div></div>
+  <p class="progress-label">{{ plan.progress.logged }} / {{ plan.progress.expected }} training days logged ({{ plan.progress.pct }}%)</p>
 </section>
 
 {% for week in plan.weeks %}

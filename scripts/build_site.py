@@ -62,7 +62,7 @@ def load_plans():
         today_date = date.today()
         today = today_date.isoformat()
         logged_days = 0
-        elapsed_days = 0
+        expected_days = 0
         for week in plan["weeks"]:
             actual_mi = 0
             for session in week["sessions"]:
@@ -71,10 +71,13 @@ def load_plans():
                 session["is_past"] = session["date"] < today
                 session["is_today"] = session["date"] == today
                 if session["date"] <= today:
-                    # Every logged activity counts here, including
-                    # cross-training on nominal rest days -- this tracks
-                    # "did something happen" rather than plan compliance.
-                    elapsed_days += 1
+                    # Denominator is only days you were actually expected to
+                    # train -- a quiet rest day shouldn't count against you.
+                    if session["type"] != "rest":
+                        expected_days += 1
+                    # But the numerator counts any logged activity, including
+                    # cross-training on a nominal rest day, since that's a
+                    # bonus rather than something owed.
                     if actual:
                         logged_days += 1
                 if actual:
@@ -92,8 +95,8 @@ def load_plans():
             week["pct"] = round(100 * actual_mi / goal_mi) if goal_mi else 0
         plan["progress"] = {
             "logged": logged_days,
-            "elapsed": elapsed_days,
-            "pct": round(100 * logged_days / elapsed_days) if elapsed_days else 0,
+            "expected": expected_days,
+            "pct": round(100 * logged_days / expected_days) if expected_days else 0,
         }
 
         plan_start = date.fromisoformat(plan["weeks"][0]["sessions"][0]["date"])
