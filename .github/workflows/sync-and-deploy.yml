@@ -7,7 +7,6 @@ on:
   push:
     branches: [main]
     paths:
-      - "data/**"
       - "templates/**"
       - "static/**"
       - "scripts/**"
@@ -34,16 +33,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Check scripts and plan data are valid
-        run: |
-          python -m py_compile scripts/*.py
-          python -c "
-          import sys, yaml
-          from pathlib import Path
-          for path in Path('data/plans').glob('*.yaml'):
-              plan = yaml.safe_load(path.read_text())
-              assert plan.get('id') and plan.get('weeks'), f'{path}: missing id or weeks'
-          "
+      - name: Check scripts are valid
+        run: python -m py_compile scripts/*.py
 
       - name: Sync Strava activities for each plan
         env:
@@ -53,10 +44,12 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: |
-          for plan in data/plans/*.yaml; do
-            plan_id=$(basename "$plan" .yaml)
-            python scripts/sync_strava.py "$plan_id"
-          done
+          plan_ids=$(curl -sf "$SUPABASE_URL/rest/v1/plans?select=id" \
+            -H "apikey: $SUPABASE_SECRET_KEY" -H "Authorization: Bearer $SUPABASE_SECRET_KEY" \
+            | python -c "import json, sys; print('\n'.join(p['id'] for p in json.load(sys.stdin)))")
+          while IFS= read -r plan_id; do
+            [ -n "$plan_id" ] && python scripts/sync_strava.py "$plan_id"
+          done <<< "$plan_ids"
 
       - name: Build site
         env:

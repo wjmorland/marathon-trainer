@@ -5,16 +5,18 @@ actual workouts pulled in automatically from Strava.
 
 ## How it fits together
 
-- `data/plans/*.yaml` — one file per training plan (generic schema: weeks of
-  sessions with date, type, title, planned distance). Drop in a new plan by
-  adding a new YAML file here; the site picks it up automatically.
+- Plan data (generic schema: weeks of sessions with date, type, title,
+  planned distance) lives in a Supabase Postgres table (`plans`, see
+  `supabase/migrations/`) rather than in git. Add a new plan by running
+  `scripts/import_xlsx_plan.py` against a spreadsheet, or inserting a row
+  directly; the site picks it up automatically.
 - Actual workout data per plan, keyed by session id, lives in a Supabase
   Postgres table (`activities`, see `supabase/migrations/`) rather than in
   git. Populated by `scripts/sync_strava.py`. A session with `source: manual`
   is never overwritten by the sync (use this to log a run by hand, or to log
   data from a source other than Strava).
-- `scripts/import_xlsx_plan.py` — one-time importer for spreadsheet-based
-  training log exports. Reusable if you regenerate the xlsx.
+- `scripts/import_xlsx_plan.py` — importer for spreadsheet-based training log
+  exports; upserts a plan into the Supabase `plans` table.
 - `scripts/sync_strava.py` — pulls recent runs from the Strava API, matches
   them to plan sessions by date, and upserts them into Supabase.
 - `scripts/build_site.py` — renders `templates/*.html` (Jinja2), merged with
@@ -31,7 +33,8 @@ python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 ```
 
-Import a plan from a spreadsheet:
+Import a plan from a spreadsheet (needs `SUPABASE_URL` / `SUPABASE_SECRET_KEY`
+exported, see below):
 
 ```bash
 .venv/bin/python3 scripts/import_xlsx_plan.py "path/to/plan.xlsx" my-plan-id
@@ -71,8 +74,9 @@ cd docs && python3 -m http.server 8000
 
 ## Setting up Supabase
 
-Activity data (the output of `sync_strava.py`) is stored in Supabase
-Postgres instead of git, so the daily sync doesn't need to push commits.
+Plan data and activity data (the output of `sync_strava.py`) are stored in
+Supabase Postgres instead of git, so the daily sync doesn't need to push
+commits.
 
 1. Create a free project at https://supabase.com (no credit card required).
 2. Install the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
@@ -109,10 +113,11 @@ from the Actions tab (`workflow_dispatch`).
 
 - If it's another xlsx in the same row-per-day layout: run the importer with
   a new plan id.
-- Otherwise, hand-write a YAML file under `data/plans/` following the same
-  schema (`id`, `name`, `goal_time`, `goal_pace`, `race_date`, `weeks: [...]`
-  each with `sessions: [...]`). No code changes needed — the build script and
-  homepage discover plans automatically.
+- Otherwise, insert a row into the Supabase `plans` table directly, following
+  the same schema (`id`, `name`, `goal_time`, `goal_pace`, `race_date`,
+  `weeks` jsonb — a list of `{number, label, sessions: [...], goal_mi}`). No
+  code changes needed — the build script and homepage discover plans
+  automatically.
 
 ## Adding a new data source
 

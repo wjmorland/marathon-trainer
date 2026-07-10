@@ -27,10 +27,8 @@ import os
 import sys
 from collections import defaultdict
 from datetime import datetime, timezone
-from pathlib import Path
 
 import requests
-import yaml
 
 STRAVA_TOKEN_URL = "https://www.strava.com/oauth/token"
 STRAVA_ACTIVITIES_URL = "https://www.strava.com/api/v3/athlete/activities"
@@ -44,6 +42,21 @@ def supabase_headers() -> dict:
         "Authorization": f"Bearer {key}",
         "Content-Type": "application/json",
     }
+
+
+def fetch_plan_weeks(plan_id: str) -> list[dict]:
+    base_url = os.environ["SUPABASE_URL"]
+    resp = requests.get(
+        f"{base_url}/rest/v1/plans",
+        headers=supabase_headers(),
+        params={"id": f"eq.{plan_id}", "select": "weeks"},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    rows = resp.json()
+    if not rows:
+        raise SystemExit(f"No plan found with id {plan_id!r}")
+    return rows[0]["weeks"]
 
 
 def fetch_existing_activities(plan_id: str) -> dict:
@@ -203,11 +216,10 @@ def main():
         sys.exit(1)
     plan_id = sys.argv[1]
 
-    plan_path = Path(f"data/plans/{plan_id}.yaml")
-    plan = yaml.safe_load(plan_path.read_text())
+    weeks = fetch_plan_weeks(plan_id)
 
     sessions_by_date = defaultdict(list)
-    for week in plan["weeks"]:
+    for week in weeks:
         for session in week["sessions"]:
             sessions_by_date[session["date"]].append(session["id"])
 
