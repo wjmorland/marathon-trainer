@@ -10,15 +10,23 @@
 </section>
 
 {% for week in plan.weeks %}
-<section class="week">
+<section class="week" id="week-{{ week.number }}"{% if week.is_current %} data-current="true"{% endif %}>
+  <details class="week-details"{{ " open" if not week.is_past else "" }}>
+  <summary class="week-summary">
+    <div class="week-summary-row">
+      <span class="week-summary-label">{{ week.label or ("Week " ~ week.number) }}</span>
+      {% if week.goal_mi %}
+      <span class="week-mileage">{{ week.actual_mi or 0 }} / {{ week.goal_mi }} mi ({{ week.pct }}%)</span>
+      {% elif week.actual_mi %}
+      <span class="week-mileage">{{ week.actual_mi }} mi</span>
+      {% endif %}
+    </div>
+    {% if week.goal_mi %}
+    <div class="week-progress-bar"><div class="week-progress-fill" style="width: {{ [week.pct, 100] | min }}%"></div></div>
+    {% endif %}
+  </summary>
   <table class="week-table">
     <thead>
-      <tr>
-        <th class="week-header" colspan="5">
-          {{ week.label or ("Week " ~ week.number) }}
-          {% if week.goal_mi %}<span class="week-goal">Goal: {{ week.goal_mi }} mi</span>{% endif %}
-        </th>
-      </tr>
       <tr class="col-labels">
         <th>Day</th>
         <th>Date</th>
@@ -67,6 +75,10 @@
       </tr>
     </tbody>
   </table>
+  </details>
 </section>
 {% endfor %}
+{% endblock %}
+{% block scripts %}
+<script src="{{ root }}static/js/plan.js?v={{ asset_version }}"></script>
 {% endblock %}
