@@ -91,7 +91,9 @@ main { max-width: 900px; margin: 0 auto; padding: 1.5rem; }
   margin: 0.75rem 0 0.25rem;
 }
 .progress-fill { background: var(--green); height: 100%; }
-.progress-label { color: var(--muted); font-size: 0.85rem; margin: 0; }
+.progress-label { color: var(--muted); font-size: 0.85rem; margin: 0 0 0.75rem; }
+.progress-label:last-of-type { margin-bottom: 0.25rem; }
+.countdown-fill { background: var(--blue); }
 
 .plan-list { display: grid; gap: 1rem; margin-top: 1.5rem; }
 .plan-card {
