@@ -8,18 +8,21 @@ actual workouts pulled in automatically from Strava.
 - `data/plans/*.yaml` — one file per training plan (generic schema: weeks of
   sessions with date, type, title, planned distance). Drop in a new plan by
   adding a new YAML file here; the site picks it up automatically.
-- `data/activities/*.yaml` — actual workout data per plan, keyed by session
-  id. Populated by `scripts/sync_strava.py`. A session with `source: manual`
+- Actual workout data per plan, keyed by session id, lives in a Supabase
+  Postgres table (`activities`, see `supabase/migrations/`) rather than in
+  git. Populated by `scripts/sync_strava.py`. A session with `source: manual`
   is never overwritten by the sync (use this to log a run by hand, or to log
   data from a source other than Strava).
 - `scripts/import_xlsx_plan.py` — one-time importer for spreadsheet-based
   training log exports. Reusable if you regenerate the xlsx.
-- `scripts/sync_strava.py` — pulls recent runs from the Strava API and
-  matches them to plan sessions by date.
-- `scripts/build_site.py` — renders `templates/*.html` (Jinja2) into static
-  HTML in `docs/`, which GitHub Pages serves.
-- `.github/workflows/sync-and-deploy.yml` — runs daily, syncs Strava,
-  rebuilds the site, commits updated activity data, and deploys to Pages.
+- `scripts/sync_strava.py` — pulls recent runs from the Strava API, matches
+  them to plan sessions by date, and upserts them into Supabase.
+- `scripts/build_site.py` — renders `templates/*.html` (Jinja2), merged with
+  activity data fetched from Supabase, into static HTML in `docs/`, which
+  GitHub Pages serves.
+- `.github/workflows/sync-and-deploy.yml` — runs daily, syncs Strava into
+  Supabase, rebuilds the site, and deploys to Pages. No longer commits
+  anything back to the repo.
 
 ## Local setup
 
@@ -34,7 +37,8 @@ Import a plan from a spreadsheet:
 .venv/bin/python3 scripts/import_xlsx_plan.py "path/to/plan.xlsx" my-plan-id
 ```
 
-Build the site locally:
+Build the site locally (needs `SUPABASE_URL` / `SUPABASE_SECRET_KEY` exported,
+see below):
 
 ```bash
 .venv/bin/python3 scripts/build_site.py
@@ -64,9 +68,45 @@ cd docs && python3 -m http.server 8000
    - `STRAVA_CLIENT_ID`
    - `STRAVA_CLIENT_SECRET`
    - `STRAVA_REFRESH_TOKEN`
-4. To sync locally, export the same three env vars and run:
+4. To sync locally, export the same three env vars plus `SUPABASE_URL` /
+   `SUPABASE_SECRET_KEY` (see below) and run:
    ```bash
    .venv/bin/python3 scripts/sync_strava.py my-plan-id
+   ```
+
+## Setting up Supabase
+
+Activity data (the output of `sync_strava.py`) is stored in Supabase
+Postgres instead of git, so the daily sync doesn't need to push commits.
+
+1. Create a free project at https://supabase.com (no credit card required).
+2. Install the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
+   (`brew install supabase/tap/supabase`), then link this repo to your
+   project and apply the schema in `supabase/migrations/`:
+   ```bash
+   supabase login
+   supabase link --project-ref <project-ref>
+   supabase db push
+   ```
+   The project ref is the subdomain in your project URL
+   (`https://<project-ref>.supabase.co`). `link` and `db push` will prompt
+   for your database password (Project Settings → Database). Re-run
+   `supabase db push` any time a new file is added to
+   `supabase/migrations/` — it tracks what's already applied (in the
+   `supabase_migrations.schema_migrations` table) and skips it.
+3. In Project Settings → API Keys, copy the **Project URL** and the
+   **secret key** (`sb_secret_...`).
+4. Add these as **Actions secrets** in the GitHub repo settings, alongside
+   the Strava ones:
+   - `SUPABASE_URL`
+   - `SUPABASE_SECRET_KEY`
+5. To run `sync_strava.py` or `build_site.py` locally, export the same two
+   env vars.
+6. If migrating from the old git-committed `data/activities/*.yaml` files,
+   run this once (with `SUPABASE_URL`/`SUPABASE_SECRET_KEY` set) before
+   deleting them:
+   ```bash
+   .venv/bin/python3 scripts/migrate_activities_to_supabase.py
    ```
 
 ## Enabling GitHub Pages
@@ -88,7 +128,7 @@ from the Actions tab (`workflow_dispatch`).
 ## Adding a new data source
 
 `sync_strava.py` is one example of a "data source" script: it reads plan
-session dates and writes `data/activities/<plan_id>.yaml` entries with a
+session dates and upserts rows into the Supabase `activities` table with a
 `source` field. Any other source (Garmin, Apple Health export, manual entry)
 can follow the same pattern — write a script that populates the same
 activities schema, and the site builder will render it without changes.

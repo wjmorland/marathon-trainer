@@ -1,24 +1,28 @@
 #!/usr/bin/env python3
-"""Render data/plans/*.yaml + data/activities/*.yaml into static HTML in docs/.
+"""Render data/plans/*.yaml + Supabase activity data into static HTML in docs/.
 
 Discovers every plan under data/plans/ automatically, so dropping in a new
 plan YAML file (hand-written or produced by an importer) is enough to add it
 to the site with no code changes.
 
+Reads SUPABASE_URL and SUPABASE_SECRET_KEY from the environment to fetch
+synced activity data (see scripts/sync_strava.py).
+
 Usage:
     .venv/bin/python3 scripts/build_site.py
 """
 import hashlib
+import os
 import shutil
 from datetime import date
 from pathlib import Path
 
+import requests
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
 ROOT = Path(__file__).resolve().parent.parent
 PLANS_DIR = ROOT / "data" / "plans"
-ACTIVITIES_DIR = ROOT / "data" / "activities"
 TEMPLATES_DIR = ROOT / "templates"
 STATIC_DIR = ROOT / "static"
 OUT_DIR = ROOT / "docs"
@@ -32,14 +36,24 @@ ASSET_VERSION = hashlib.sha1((STATIC_DIR / "css" / "style.css").read_bytes()).he
 env.globals["asset_version"] = ASSET_VERSION
 
 
+def fetch_activities(plan_id: str) -> dict:
+    base_url = os.environ["SUPABASE_URL"]
+    key = os.environ["SUPABASE_SECRET_KEY"]
+    resp = requests.get(
+        f"{base_url}/rest/v1/activities",
+        headers={"apikey": key, "Authorization": f"Bearer {key}"},
+        params={"plan_id": f"eq.{plan_id}", "select": "session_id,data"},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return {row["session_id"]: row["data"] for row in resp.json()}
+
+
 def load_plans():
     plans = []
     for path in sorted(PLANS_DIR.glob("*.yaml")):
         plan = yaml.safe_load(path.read_text())
-        activities_path = ACTIVITIES_DIR / f"{plan['id']}.yaml"
-        activities = {}
-        if activities_path.exists():
-            activities = yaml.safe_load(activities_path.read_text()) or {}
+        activities = fetch_activities(plan["id"])
 
         today = date.today().isoformat()
         completed = 0

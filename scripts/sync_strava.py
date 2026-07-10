@@ -12,9 +12,10 @@ endpoint. This costs one extra API request per activity (Strava allows
 100 req/15min, 1000/day, which is plenty for a daily sync of a handful of
 activities).
 
-Writes/updates data/activities/<plan_id>.yaml, keyed by session id, so the
-site builder can merge planned vs. actual. Designed to be safe to re-run:
-existing manual overrides in the activities file (marked `source: manual`)
+Writes/updates rows in the Supabase `activities` table, keyed by
+(plan_id, session_id), so the site builder can merge planned vs. actual.
+Reads SUPABASE_URL and SUPABASE_SECRET_KEY from the environment. Designed
+to be safe to re-run: existing manual overrides (marked `source: manual`)
 are never overwritten by Strava data.
 
 Usage:
@@ -32,6 +33,39 @@ import yaml
 STRAVA_TOKEN_URL = "https://www.strava.com/oauth/token"
 STRAVA_ACTIVITIES_URL = "https://www.strava.com/api/v3/athlete/activities"
 STRAVA_ACTIVITY_DETAIL_URL = "https://www.strava.com/api/v3/activities/{id}"
+
+
+def supabase_headers() -> dict:
+    key = os.environ["SUPABASE_SECRET_KEY"]
+    return {
+        "apikey": key,
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+    }
+
+
+def fetch_existing_activities(plan_id: str) -> dict:
+    base_url = os.environ["SUPABASE_URL"]
+    resp = requests.get(
+        f"{base_url}/rest/v1/activities",
+        headers=supabase_headers(),
+        params={"plan_id": f"eq.{plan_id}", "select": "session_id,data"},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return {row["session_id"]: row["data"] for row in resp.json()}
+
+
+def upsert_activity(plan_id: str, session_id: str, data: dict) -> None:
+    base_url = os.environ["SUPABASE_URL"]
+    resp = requests.post(
+        f"{base_url}/rest/v1/activities",
+        headers={**supabase_headers(), "Prefer": "resolution=merge-duplicates"},
+        params={"on_conflict": "plan_id,session_id"},
+        json=[{"plan_id": plan_id, "session_id": session_id, "data": data}],
+        timeout=30,
+    )
+    resp.raise_for_status()
 
 METERS_PER_MILE = 1609.34
 
@@ -181,17 +215,13 @@ def main():
     access_token = get_access_token()
     summaries = [a for a in fetch_activities(access_token, after_epoch) if a.get("type") in SUPPORTED_TYPES]
 
-    activities_path = Path(f"data/activities/{plan_id}.yaml")
-    existing = {}
-    if activities_path.exists():
-        existing = yaml.safe_load(activities_path.read_text()) or {}
+    existing = fetch_existing_activities(plan_id)
 
     activities_by_date = defaultdict(list)
     for a in summaries:
         local_date = a["start_date_local"][:10]
         activities_by_date[local_date].append(a)
 
-    updated = dict(existing)
     changed_days = 0
     for local_date, day_summaries in activities_by_date.items():
         session_ids = sessions_by_date.get(local_date, [])
@@ -200,7 +230,7 @@ def main():
         # If a day has multiple sessions logged (rare), attach all Strava
         # activities for that date to the first session; otherwise 1:1.
         session_id = session_ids[0]
-        if updated.get(session_id, {}).get("source") == "manual":
+        if existing.get(session_id, {}).get("source") == "manual":
             continue
 
         details = [fetch_activity_detail(access_token, a["id"]) for a in day_summaries]
@@ -235,14 +265,10 @@ def main():
             continue
 
         candidate["synced_at"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-        updated[session_id] = candidate
+        upsert_activity(plan_id, session_id, candidate)
         changed_days += 1
 
-    if updated != existing:
-        activities_path.parent.mkdir(parents=True, exist_ok=True)
-        with activities_path.open("w") as f:
-            yaml.safe_dump(updated, f, sort_keys=False, allow_unicode=True, width=100)
-    print(f"Synced {changed_days} changed activity day(s) -> {activities_path}")
+    print(f"Synced {changed_days} changed activity day(s) -> Supabase ({plan_id})")
 
 
 if __name__ == "__main__":
