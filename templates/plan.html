@@ -42,7 +42,7 @@
       {% set row_classes = ["day-row", "type-" ~ session.type] %}
       {% if session.actual %}{% set row_classes = row_classes + ["logged"] %}{% endif %}
       {% if session.is_today %}{% set row_classes = row_classes + ["today"] %}{% endif %}
-      <tr class="{{ row_classes | join(' ') }}" onclick="location.href='sessions/{{ session.id }}/index.html'">
+      <tr class="{{ row_classes | join(' ') }}" data-date="{{ session.date }}" onclick="location.href='sessions/{{ session.id }}/index.html'">
         <td class="col-day">{{ session.day }}</td>
         <td class="col-date">{{ session.date }}</td>
         <td class="col-plan">
