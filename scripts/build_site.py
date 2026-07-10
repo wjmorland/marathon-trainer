@@ -74,8 +74,6 @@ def load_plans():
 
         today_date = date.today()
         today = today_date.isoformat()
-        logged_days = 0
-        expected_days = 0
         for week in plan["weeks"]:
             actual_mi = 0
             for session in week["sessions"]:
@@ -83,16 +81,6 @@ def load_plans():
                 session["actual"] = actual
                 session["is_past"] = session["date"] < today
                 session["is_today"] = session["date"] == today
-                if session["date"] <= today:
-                    # Denominator is only days you were actually expected to
-                    # train -- a quiet rest day shouldn't count against you.
-                    if session["type"] != "rest":
-                        expected_days += 1
-                    # But the numerator counts any logged activity, including
-                    # cross-training on a nominal rest day, since that's a
-                    # bonus rather than something owed.
-                    if actual:
-                        logged_days += 1
                 if actual:
                     # Only count run mileage toward the weekly running total;
                     # ride distance is shown per-session but excluded here so
@@ -106,20 +94,15 @@ def load_plans():
             week["is_current"] = any(s["is_today"] for s in week["sessions"])
             goal_mi = week.get("goal_mi")
             week["pct"] = round(100 * actual_mi / goal_mi) if goal_mi else 0
-        plan["progress"] = {
-            "logged": logged_days,
-            "expected": expected_days,
-            "pct": round(100 * logged_days / expected_days) if expected_days else 0,
-        }
-
         plan_start = date.fromisoformat(plan["weeks"][0]["sessions"][0]["date"])
         race_date = date.fromisoformat(plan["race_date"])
         total_plan_days = (race_date - plan_start).days + 1
         days_remaining = (race_date - today_date).days
-        days_into_plan = total_plan_days - max(days_remaining, 0)
+        days_completed = total_plan_days - max(days_remaining, 0)
         plan["countdown"] = {
+            "days_completed": days_completed,
             "days_remaining": days_remaining,
-            "pct": max(0, min(100, round(100 * days_into_plan / total_plan_days))) if total_plan_days else 0,
+            "pct": max(0, min(100, round(100 * days_completed / total_plan_days))) if total_plan_days else 0,
         }
         plans.append(plan)
     return plans
