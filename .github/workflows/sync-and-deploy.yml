@@ -36,20 +36,14 @@ jobs:
       - name: Check scripts are valid
         run: python -m py_compile scripts/*.py
 
-      - name: Sync Strava activities for each plan
+      - name: Sync Strava activities for every plan
         env:
           STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
           STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
           STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-        run: |
-          plan_ids=$(curl -sf "$SUPABASE_URL/rest/v1/plans?select=id" \
-            -H "apikey: $SUPABASE_SECRET_KEY" -H "Authorization: Bearer $SUPABASE_SECRET_KEY" \
-            | python -c "import json, sys; print('\n'.join(p['id'] for p in json.load(sys.stdin)))")
-          while IFS= read -r plan_id; do
-            [ -n "$plan_id" ] && python scripts/sync_strava.py "$plan_id"
-          done <<< "$plan_ids"
+        run: python scripts/sync_strava.py
 
       - name: Build site
         env:

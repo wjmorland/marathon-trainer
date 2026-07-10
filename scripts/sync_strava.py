@@ -21,7 +21,10 @@ to be safe to re-run: existing manual overrides (marked `source: manual`)
 are never overwritten by Strava data.
 
 Usage:
-    .venv/bin/python3 scripts/sync_strava.py <plan_id>
+    .venv/bin/python3 scripts/sync_strava.py [plan_id]
+
+With no plan_id, syncs every plan in the Supabase `plans` table -- this is
+what the daily GitHub Actions run uses.
 """
 import os
 import sys
@@ -42,6 +45,18 @@ def supabase_headers() -> dict:
         "Authorization": f"Bearer {key}",
         "Content-Type": "application/json",
     }
+
+
+def fetch_plan_ids() -> list[str]:
+    base_url = os.environ["SUPABASE_URL"]
+    resp = requests.get(
+        f"{base_url}/rest/v1/plans",
+        headers=supabase_headers(),
+        params={"select": "id"},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return [row["id"] for row in resp.json()]
 
 
 def fetch_plan_weeks(plan_id: str) -> list[dict]:
@@ -210,12 +225,7 @@ def build_activity_record(detail: dict) -> dict:
     }
 
 
-def main():
-    if len(sys.argv) != 2:
-        print(__doc__)
-        sys.exit(1)
-    plan_id = sys.argv[1]
-
+def sync_plan(plan_id: str, access_token: str) -> int:
     weeks = fetch_plan_weeks(plan_id)
 
     sessions_by_date = defaultdict(list)
@@ -226,7 +236,6 @@ def main():
     plan_start = min(sessions_by_date)
     after_epoch = int(datetime.fromisoformat(plan_start).timestamp())
 
-    access_token = get_access_token()
     summaries = [a for a in fetch_activities(access_token, after_epoch) if a.get("type") in SUPPORTED_TYPES]
 
     existing = fetch_existing_activities(plan_id)
@@ -294,7 +303,20 @@ def main():
         upsert_activity(plan_id, session_id, candidate)
         changed_days += 1
 
-    print(f"Synced {changed_days} changed activity day(s) -> Supabase ({plan_id})")
+    return changed_days
+
+
+def main():
+    if len(sys.argv) > 2:
+        print(__doc__)
+        sys.exit(1)
+
+    plan_ids = [sys.argv[1]] if len(sys.argv) == 2 else fetch_plan_ids()
+    access_token = get_access_token()
+
+    for plan_id in plan_ids:
+        changed_days = sync_plan(plan_id, access_token)
+        print(f"Synced {changed_days} changed activity day(s) -> Supabase ({plan_id})")
 
 
 if __name__ == "__main__":

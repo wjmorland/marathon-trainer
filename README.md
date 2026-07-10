@@ -69,7 +69,8 @@ cd docs && python3 -m http.server 8000
 4. To sync locally, export the same three env vars plus `SUPABASE_URL` /
    `SUPABASE_SECRET_KEY` (see below) and run:
    ```bash
-   .venv/bin/python3 scripts/sync_strava.py my-plan-id
+   .venv/bin/python3 scripts/sync_strava.py          # syncs every plan
+   .venv/bin/python3 scripts/sync_strava.py my-plan-id  # or just one
    ```
 
 ## Setting up Supabase
