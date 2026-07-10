@@ -167,7 +167,7 @@ weeks:
     planned_distance_mi: 9.0
   goal_mi: 33.0
 - number: 4
-  label: Week 4 (Step-Back)
+  label: Week 4
   sessions:
   - id: w4-2026-06-29
     date: '2026-06-29'
