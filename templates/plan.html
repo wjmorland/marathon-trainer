@@ -5,8 +5,12 @@
 <section class="hero">
   <h1>{{ plan.name }}</h1>
   <p>Goal: <strong>{{ plan.goal_time }}</strong> ({{ plan.goal_pace }}) &middot; Race day: {{ plan.race_date }}</p>
+  <div class="progress-bar countdown-bar"><div class="progress-fill countdown-fill" style="width: {{ plan.countdown.pct }}%"></div></div>
+  <p class="progress-label">
+    {% if plan.countdown.days_remaining > 0 %}{{ plan.countdown.days_remaining }} days until race day{% elif plan.countdown.days_remaining == 0 %}Race day is today{% else %}Race day has passed{% endif %}
+  </p>
   <div class="progress-bar"><div class="progress-fill" style="width: {{ plan.progress.pct }}%"></div></div>
-  <p class="progress-label">{{ plan.progress.completed }} / {{ plan.progress.total }} sessions logged ({{ plan.progress.pct }}%)</p>
+  <p class="progress-label">{{ plan.progress.logged }} / {{ plan.progress.elapsed }} days logged ({{ plan.progress.pct }}%)</p>
 </section>
 
 {% for week in plan.weeks %}

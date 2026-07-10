@@ -59,9 +59,10 @@ def load_plans():
         plan = yaml.safe_load(path.read_text())
         activities = fetch_activities(plan["id"])
 
-        today = date.today().isoformat()
-        completed = 0
-        total = 0
+        today_date = date.today()
+        today = today_date.isoformat()
+        logged_days = 0
+        elapsed_days = 0
         for week in plan["weeks"]:
             actual_mi = 0
             for session in week["sessions"]:
@@ -69,10 +70,13 @@ def load_plans():
                 session["actual"] = actual
                 session["is_past"] = session["date"] < today
                 session["is_today"] = session["date"] == today
-                if session["type"] != "rest":
-                    total += 1
+                if session["date"] <= today:
+                    # Every logged activity counts here, including
+                    # cross-training on nominal rest days -- this tracks
+                    # "did something happen" rather than plan compliance.
+                    elapsed_days += 1
                     if actual:
-                        completed += 1
+                        logged_days += 1
                 if actual:
                     # Only count run mileage toward the weekly running total;
                     # ride distance is shown per-session but excluded here so
@@ -87,9 +91,19 @@ def load_plans():
             goal_mi = week.get("goal_mi")
             week["pct"] = round(100 * actual_mi / goal_mi) if goal_mi else 0
         plan["progress"] = {
-            "completed": completed,
-            "total": total,
-            "pct": round(100 * completed / total) if total else 0,
+            "logged": logged_days,
+            "elapsed": elapsed_days,
+            "pct": round(100 * logged_days / elapsed_days) if elapsed_days else 0,
+        }
+
+        plan_start = date.fromisoformat(plan["weeks"][0]["sessions"][0]["date"])
+        race_date = date.fromisoformat(plan["race_date"])
+        total_plan_days = (race_date - plan_start).days + 1
+        days_remaining = (race_date - today_date).days
+        days_into_plan = total_plan_days - max(days_remaining, 0)
+        plan["countdown"] = {
+            "days_remaining": days_remaining,
+            "pct": max(0, min(100, round(100 * days_into_plan / total_plan_days))) if total_plan_days else 0,
         }
         plans.append(plan)
     return plans
