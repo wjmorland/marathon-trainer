@@ -7,7 +7,6 @@ on:
   push:
     branches: [main]
     paths:
-      - "data/**"
       - "templates/**"
       - "static/**"
       - "scripts/**"
@@ -34,29 +33,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Check scripts and plan data are valid
-        run: |
-          python -m py_compile scripts/*.py
-          python -c "
-          import sys, yaml
-          from pathlib import Path
-          for path in Path('data/plans').glob('*.yaml'):
-              plan = yaml.safe_load(path.read_text())
-              assert plan.get('id') and plan.get('weeks'), f'{path}: missing id or weeks'
-          "
+      - name: Check scripts are valid
+        run: python -m py_compile scripts/*.py
 
-      - name: Sync Strava activities for each plan
+      - name: Sync Strava activities for every plan
         env:
           STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
           STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
           STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-        run: |
-          for plan in data/plans/*.yaml; do
-            plan_id=$(basename "$plan" .yaml)
-            python scripts/sync_strava.py "$plan_id"
-          done
+        run: python scripts/sync_strava.py
 
       - name: Build site
         env:

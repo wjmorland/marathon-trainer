@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
-"""One-time importer: spreadsheet-based training log -> generic plan YAML.
+"""Importer: spreadsheet-based training log -> Supabase `plans` table.
 
 Usage:
-    .venv/bin/python3 scripts/import_xlsx_plan.py <input.xlsx> <plan_id> [output.yaml]
+    .venv/bin/python3 scripts/import_xlsx_plan.py <input.xlsx> <plan_id>
 
-The plan schema produced here is generic (see data/plans/README.md) so any
-future plan of a similar row-per-day layout can be dropped in by writing a
-small adapter, or by hand-authoring YAML directly.
+Reads SUPABASE_URL and SUPABASE_SECRET_KEY from the environment. The plan
+schema produced here is generic (id, name, goal_time, goal_pace, race_date,
+weeks of sessions) so any future plan of a similar row-per-day layout can be
+imported by running this against a new xlsx.
 """
+import os
 import re
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
 import openpyxl
-import yaml
+import requests
 
 SESSION_TYPE_KEYWORDS = [
     ("race", "race"),
@@ -43,13 +45,30 @@ def parse_distance(text: str) -> float | None:
     return float(m.group(1)) if m else None
 
 
+def upsert_plan(plan: dict) -> None:
+    base_url = os.environ["SUPABASE_URL"]
+    key = os.environ["SUPABASE_SECRET_KEY"]
+    resp = requests.post(
+        f"{base_url}/rest/v1/plans",
+        headers={
+            "apikey": key,
+            "Authorization": f"Bearer {key}",
+            "Content-Type": "application/json",
+            "Prefer": "resolution=merge-duplicates",
+        },
+        params={"on_conflict": "id"},
+        json=[plan],
+        timeout=30,
+    )
+    resp.raise_for_status()
+
+
 def main():
-    if len(sys.argv) < 3:
+    if len(sys.argv) != 3:
         print(__doc__)
         sys.exit(1)
     xlsx_path = Path(sys.argv[1])
     plan_id = sys.argv[2]
-    out_path = Path(sys.argv[3]) if len(sys.argv) > 3 else Path(f"data/plans/{plan_id}.yaml")
 
     wb = openpyxl.load_workbook(xlsx_path, data_only=True)
     ws = wb.active
@@ -120,11 +139,9 @@ def main():
         "weeks": [weeks[k] for k in sorted(weeks)],
     }
 
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    with out_path.open("w") as f:
-        yaml.safe_dump(plan, f, sort_keys=False, allow_unicode=True, width=100)
+    upsert_plan(plan)
     n_sessions = sum(len(w["sessions"]) for w in plan["weeks"])
-    print(f"Wrote {out_path} ({len(plan['weeks'])} weeks, {n_sessions} sessions)")
+    print(f"Upserted plan {plan_id!r} to Supabase ({len(plan['weeks'])} weeks, {n_sessions} sessions)")
 
 
 if __name__ == "__main__":

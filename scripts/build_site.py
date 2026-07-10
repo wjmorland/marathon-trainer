@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Render data/plans/*.yaml + Supabase activity data into static HTML in docs/.
+"""Render plan + activity data from Supabase into static HTML in docs/.
 
-Discovers every plan under data/plans/ automatically, so dropping in a new
-plan YAML file (hand-written or produced by an importer) is enough to add it
-to the site with no code changes.
+Discovers every plan in the Supabase `plans` table automatically, so adding a
+new plan (via scripts/import_xlsx_plan.py or a direct insert) is enough to
+add it to the site with no code changes.
 
 Reads SUPABASE_URL and SUPABASE_SECRET_KEY from the environment to fetch
-synced activity data (see scripts/sync_strava.py).
+plan and synced activity data (see scripts/sync_strava.py).
 
 Usage:
     .venv/bin/python3 scripts/build_site.py
@@ -18,11 +18,9 @@ from datetime import date
 from pathlib import Path
 
 import requests
-import yaml
 from jinja2 import Environment, FileSystemLoader
 
 ROOT = Path(__file__).resolve().parent.parent
-PLANS_DIR = ROOT / "data" / "plans"
 TEMPLATES_DIR = ROOT / "templates"
 STATIC_DIR = ROOT / "static"
 OUT_DIR = ROOT / "docs"
@@ -40,12 +38,28 @@ ASSET_VERSION = hashlib.sha1(
 env.globals["asset_version"] = ASSET_VERSION
 
 
+def supabase_headers() -> dict:
+    key = os.environ["SUPABASE_SECRET_KEY"]
+    return {"apikey": key, "Authorization": f"Bearer {key}"}
+
+
+def fetch_plans() -> list[dict]:
+    base_url = os.environ["SUPABASE_URL"]
+    resp = requests.get(
+        f"{base_url}/rest/v1/plans",
+        headers=supabase_headers(),
+        params={"select": "id,name,goal_time,goal_pace,race_date,source,weeks", "order": "race_date"},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
 def fetch_activities(plan_id: str) -> dict:
     base_url = os.environ["SUPABASE_URL"]
-    key = os.environ["SUPABASE_SECRET_KEY"]
     resp = requests.get(
         f"{base_url}/rest/v1/activities",
-        headers={"apikey": key, "Authorization": f"Bearer {key}"},
+        headers=supabase_headers(),
         params={"plan_id": f"eq.{plan_id}", "select": "session_id,data"},
         timeout=30,
     )
@@ -55,8 +69,7 @@ def fetch_activities(plan_id: str) -> dict:
 
 def load_plans():
     plans = []
-    for path in sorted(PLANS_DIR.glob("*.yaml")):
-        plan = yaml.safe_load(path.read_text())
+    for plan in fetch_plans():
         activities = fetch_activities(plan["id"])
 
         today_date = date.today()
