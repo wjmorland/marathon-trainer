@@ -168,6 +168,15 @@ def format_speed(distance_m: float, moving_time_s: int) -> str | None:
     return f"{mph:.1f} mph"
 
 
+def double_cadence(cadence: float | None, is_ride: bool) -> float | None:
+    """Strava's API reports running cadence per leg (~80-90); its UI doubles
+    it to steps per minute for both feet (~160-180). Cycling cadence is pedal
+    RPM and should be left as-is."""
+    if cadence is None or is_ride:
+        return cadence
+    return cadence * 2
+
+
 def build_activity_record(detail: dict) -> dict:
     distance_m = detail.get("distance", 0)
     moving_time_s = detail.get("moving_time", 0)
@@ -199,7 +208,7 @@ def build_activity_record(detail: dict) -> dict:
                 "moving_time_s": lap.get("moving_time"),
                 "pace": format_pace(lap.get("distance", 0), lap.get("moving_time", 0)),
                 "avg_heartrate": lap.get("average_heartrate"),
-                "avg_cadence": lap.get("average_cadence"),
+                "avg_cadence": double_cadence(lap.get("average_cadence"), is_ride),
             }
         )
 
@@ -216,7 +225,7 @@ def build_activity_record(detail: dict) -> dict:
         "elevation_gain_ft": round(detail.get("total_elevation_gain", 0) * 3.28084, 1),
         "avg_heartrate": detail.get("average_heartrate"),
         "max_heartrate": detail.get("max_heartrate"),
-        "avg_cadence": detail.get("average_cadence"),
+        "avg_cadence": double_cadence(detail.get("average_cadence"), is_ride),
         "calories": detail.get("calories"),
         "perceived_exertion": detail.get("perceived_exertion"),
         "strava_url": f"https://www.strava.com/activities/{detail['id']}",
