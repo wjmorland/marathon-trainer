@@ -41,6 +41,14 @@ def classify(short_title: str) -> str:
 def parse_distance(text: str) -> float | None:
     if not text:
         return None
+    # Compound sessions (strength/tempo) spell out their session total as
+    # "— Total N mi" at the end of the detail. Prefer that over the first
+    # distance token, which would otherwise pick up the *rep* distance
+    # (e.g. "4×1.5 Miles" -> 1.5) or the tempo segment (e.g. "8 Mile Tempo"
+    # -> 8) and understate an 11-mile session as 1.5.
+    total = re.search(r"Total\s+(\d+(?:\.\d+)?)\s*(?:mi|mile)", text, re.IGNORECASE)
+    if total:
+        return float(total.group(1))
     m = re.search(r"(\d+(?:\.\d+)?)\s*(?:mi|mile)", text, re.IGNORECASE)
     return float(m.group(1)) if m else None
 
